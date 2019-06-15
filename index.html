@@ -24,8 +24,9 @@ iframe {border: 0px;}</style>
 	<script>
 		layui.use('layer',function(){
 			var layer = layui.layer;
-			layer.alert('欢迎访问！由于money的问题 本blog响应速度较慢 请勿连续点击 谢谢配合');
-			layer.alert('如果想联系我，请添加QQ群654349958并备注 blog')
+			layer.alert('欢迎访问！由于money的问题 本blog响应速度较慢 请勿连续点击 谢谢配合',function(){
+			layer.alert('如果想联系我，请添加QQ群654349958并备注 blog');
+			});
 			var l = layer.open({
                 type: 2,
 		closeBtn: 0,
