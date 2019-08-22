@@ -1,43 +1,215 @@
+<!doctype html>
 <html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>rainy的blog</title>
-<style mce_bogus="1">body { margin: 0px;  }
-iframe {border: 0px;}</style>
-</head>
-<script type="text/javascript">
-		function resize(){
-			document.getElementById('frame3d').style.height = document.body.clientHeight+"px";
-		}
-		window.onresize = resize;
-</script>
-<body scroll="no">
-<iframe id="frame3d" name="frame3d" frameborder="0" width="100%" scrolling="auto"
-	style="margin-top: -4px;" onload="this.style.height=document.body.clientHeight"
-	height="100%" src="https://rainybx.top:8081"></iframe> 
-</body>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>首页</title>
+		<link rel="shortcut icon" href="static/favicon.ico" />
+		<link rel="bookmark" href="static/favicon.ico" />
+		<link href="css/bootstrap.css" rel="stylesheet" type="text/css">
+		<link href="css/public.css" rel="stylesheet" type="text/css">
+		<style>
+			* {
+            /*animation: rotation 6s linear 0s infinite;*/
+        }
+.container-fluid[v-cloak]{
+	display: none;
+}
+
+        @keyframes rotation {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+	</head>
+
+	<body>
+		<div class="container-fluid" v-cloak>
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"><a class="navbar-brand" href="/"><img src="img/img.png"
+					 height="50px" alt="" style="border-radius: 50%"></a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent1"
+				 aria-controls="navbarSupportedContent1" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent1">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item active"><a class="nav-link" href="/">首页 </a></li>
+						<li class="nav-item" v-if="isLogin"><a class="nav-link" href="/c/pscenter">个人中心 </a></li>
+						<li class="nav-item" v-else><a class="nav-link" href="/login">登录 </a></li>
+					</ul>
+				</div>
+			</nav>
+			<br>
+			<div class="row width">
+				<div class="col-lg-7 col-md-7 col-sm-10 left" style="line-height: 40px;">您的位置：<a href="javascript:void(0)" @click="getIndex()">首页</a>
+					<span v-if="isClassify">
+						-><a href="javascript:void(0)" @click="changeClassify(index.data.classifies.id)">{{index.data.classifies.name}}</a>
+						<span v-if="isChildClassify">
+							<span v-for="child in index.data.classifies.children">
+								-><a href="javascript:void(0)" @click="changeClassify(child.id)">{{child.name}}</a>
+							</span>
+						</span>
+					</span>
+					<span v-if="index.data.title != ''">
+						->搜索结果：{{index.data.title}}
+					</span>
+					<span v-if="index.data.article.current != 1">
+						->第{{index.data.article.current}}页
+					</span>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-10 offset-sm-1 right">
+					<div class="form-group" id="searchForm" style="margin-bottom: 0px">
+						<input id="searchInput" v-model="search" type="text" class="form-control">
+						<span class="input-group-btn">
+							<button class="btn btn-primary" type="button" @click="searchBtn()">Search</button>
+						</span>
+					</div>
+				</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="col-lg-7 col-md-10 col-sm-10 offset-lg-1 offset-md-1 offset-sm-1 left">
+					<span style="color: red;">本站施工中，如需完整体验请移步至<a href="https://rainybx.top:8081">非vue版本</a></span><br><br>
+					<span v-if="index.data.article.total==0">暂无文章</span>
+					<span v-else>{{index.data.article.total}}条相关结果<br><br></span>
+
+					<div class="article-block notice article" v-for="art in index.data.article.records" style="cursor: pointer"
+					 v-bind:data-title="art.title" v-bind:data-id="art.id">{{art.title}}
+						<br>
+						<span style="font-size: 0.9em;color: gray;">{{art.time}}</span>
+					</div>
+					<span v-if="index.data.article.total!=0">
+						当前第{{index.data.article.current}}页，共{{index.data.totalPage}}页
+						<span v-if="index.data.article.current!=1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" @click="beforePage()">上一页</a></span>
+						<span v-if="index.data.article.current!=index.data.totalPage">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)"
+							 @click="nextPage()">下一页</a></span>
+					</span>
+				</div>
+				<div class="col-lg-2 col-md-10 col-sm-10 offset-lg-1 offset-md-1 offset-sm-1 right" style="padding: 0px;">
+					<br>
+					<div class="article-block" v-if="isLogin" style="background-color: #f8f9fa !important;border-radius: 10px;width: 100%;">
+						<div style="text-align: center;margin: 30px;">
+							<div style="margin: 0 auto;height: 70px;width: 70px;background-image: url('${user.logo}');background-size: cover;background-repeat:no-repeat;border-radius: 50% 50%"></div>
+						</div>
+						<div style="text-align: center;margin-top: 20px;">欢迎您，${user.name!user.loginCode}</div>
+						<div style="text-align: center;margin-top: 20px;"><a href="/logout">注销</a></div>
+					</div>
+					<div class="article-block" style="background-color: #f8f9fa !important;border-radius: 10px;width: 100%;margin-top: 20px">
+						<div class="infoCss" style="" v-for="classif in classify.data">
+							<span style="font-size: 20px"><a href="javascript:void(0)" @click="changeClassify(classif.id)" style="color: black">
+									{{classif.name}}</a></span><br>
+							<a v-for="child in classif.children" href="javascript:void(0)" @click="changeClassify(child.id)" style="color: gray">{{child.name}}</a>
+						</div>
+						</#list>
+					</div>
+
+				</div>
+			</div>
+			<br>
+			<footer>
+				<div class="row" style="background-color: #f8f9fa !important;height: 50px;: middle;">
+					<div class="col-7 offset-1" style="position: relative;top: 15px"></div>
+					<div class="col-3 offset-1" style="position: relative;top: 15px">Designed by Rainy</div>
+				</div>
+			</footer>
+		</div>
+		<div id="webInfo">
+			<div style="text-align: center;">
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				如果你的浏览器10秒钟还没有对我的网站做出响应，请更换浏览器或者移步至<a href="https://rainybx.top:8081">非vue版本访问</a>，谢谢<br>
+				顺带提一下&nbsp;用ie使用本站的搜索，可能会error 摊手
+			</div>
+		</div>
+		<script src="js/public.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue.js"></script>
+		<script src="js/axios.min.js"></script>
+		<script type="text/javascript">
+			var vue = new Vue({
+				el: '.container-fluid',
+				data: {
+					index: {},
+					classify: {},
+					isLogin: false,
+					isClassify: false,
+					isChildClassify: false,
+					search: ''
+				},
+				mounted: function() {
+					this.getIndex();
+					this.getClassify();
+				},
+				methods: {
+					isBlank: function(item) {
+						if (item == "" || item == null) {
+							return true;
+						} else {
+							return false;
+						}
+					},
+					getIndex: function(classifyID, title, page) {
+						if (typeof classifyID == 'undefined') {
+							classifyID = "";
+						}
+						if (typeof title == 'undefined') {
+							title = "";
+						}
+						if (typeof page == 'undefined') {
+							page = "";
+						}
+						var that = this;
+						axios.get(host + "/index.json?classifyID=" + classifyID + "&title=" + title + "&pageNo=" + page).then(function(
+							res) {
+							that.index = res.data;
+							if (typeof that.index.data.user != 'undefined') {
+								that.isLogin = true;
+							} else {
+								that.isLogin = false;
+							}
+							if (typeof that.index.data.classifies != 'undefined') {
+								that.isClassify = true;
+								if (typeof that.index.data.classifies.children != 'undefined') {
+									that.isChildClassify = true
+								} else {
+									that.isChildClassify = false
+								}
+							} else {
+								that.isClassify = false;
+								that.isChildClassify = false
+							}
+						}).catch(function(error) { // 请求失败处理
+							console.log(error);
+						});
+
+
+					},
+					searchBtn: function() {
+						this.getIndex(this.index.data.classifyID, this.search, undefined)
+					},
+					getClassify: function() {
+						var that = this;
+						axios.get(host + "/classify.json").then(function(res) {
+							that.classify = res.data;
+							document.getElementById("webInfo").style.display="none";
+						})
+					},
+					nextPage: function() {
+						this.getIndex(this.index.data.classifyID, this.search, this.index.data.article.current + 1)
+					},
+					beforePage: function() {
+						this.getIndex(this.index.data.classifyID, this.search, this.index.data.article.current - 1)
+					},
+					changeClassify: function(classify){
+						this.getIndex(classify, undefined,undefined)
+					}
+				}
+			})
+		</script>
+	</body>
 </html>
-	<script src="//layui.hcwl520.com.cn/layui-v2.5.4/layui.js?v=201906060202"></script>
-	<script>
-		layui.use('layer',function(){
-			var layer = layui.layer;
-			layer.alert('欢迎访问！由于money的问题 本blog响应速度较慢(特别是首页) 请勿连续点击 谢谢配合',function(){
-			layer.alert('如果想联系我，请添加QQ群654349958并备注 blog');
-			});
-			var l = layer.open({
-                type: 2,
-		closeBtn: 0,
-                title: '网易云音乐',
-                shadeClose: false,
-                shade: false,
-                maxmin: true, //开启最大化最小化按钮
-                area: ['60%', '60%'],
-                content: 'https://music.163.com/outchain/player?type=0&id=2843822314&auto=1&height=430'
-            });
-            layer.min(l);
-		})
-	
-	</script>
