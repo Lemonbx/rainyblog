@@ -59,6 +59,7 @@
 					<span v-if="index.data.article.current != 1">
 						->第{{index.data.article.current}}页
 					</span>
+					<img v-show="loading" src="img/load.gif" height="21px">
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-10 offset-sm-1 right">
 					<div class="form-group" id="searchForm" style="margin-bottom: 0px">
@@ -139,7 +140,8 @@
 					isLogin: false,
 					isClassify: false,
 					isChildClassify: false,
-					search: ''
+					search: '',
+					loading: false
 				},
 				mounted: function() {
 					this.getIndex();
@@ -154,6 +156,7 @@
 						}
 					},
 					getIndex: function(classifyID, title, page) {
+						this.showLoad();
 						if (typeof classifyID == 'undefined') {
 							classifyID = "";
 						}
@@ -183,6 +186,7 @@
 								that.isClassify = false;
 								that.isChildClassify = false
 							}
+							that.hideLoad();
 						}).catch(function(error) { // 请求失败处理
 							console.log(error);
 						});
@@ -207,6 +211,12 @@
 					},
 					changeClassify: function(classify){
 						this.getIndex(classify, undefined,undefined)
+					},
+					showLoad: function(){
+						this.loading=true;
+					},
+					hideLoad: function(){
+						this.loading=false;
 					}
 				}
 			})
