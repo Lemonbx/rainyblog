@@ -45,13 +45,13 @@
 			<br>
 			<div class="row width">
 				<div class="col-lg-7 col-md-7 col-sm-10 left" style="line-height: 40px;">您的位置：<a href="javascript:void(0)" @click="getIndex()">首页</a>
-				<span v-if="isClassify">
-					<span v-if="!!index.data.classifies.pname">
-						-><a href="javascript:void(0)" @click="changeClassify(index.data.classifies.pid)">{{index.data.classifies.pname}}</a>
+					<span v-if="isClassify">
+						<span v-if="!!index.data.classifies.pname">
+							-><a href="javascript:void(0)" @click="changeClassify(index.data.classifies.pid)">{{index.data.classifies.pname}}</a>
+						</span>
+						-><a href="javascript:void(0)" @click="changeClassify(index.data.classifies.id)">{{index.data.classifies.name}}</a>
 					</span>
-					-><a href="javascript:void(0)" @click="changeClassify(index.data.classifies.id)">{{index.data.classifies.name}}</a>
-				</span>
-					
+
 					<span v-if="index.data.title != ''">
 						->搜索结果：{{index.data.title}}
 					</span>
@@ -169,19 +169,21 @@
 						var that = this;
 						$.request.get({
 							url: "/api/index/data?classifyID=" + classifyID + "&title=" + title + "&pageNo=" + page,
-							success: function(res){
+							success: function(res) {
 								that.index = res;
-								if (typeof that.index.data.user != 'undefined'&&that.index.data.user!=''&&that.index.data.user!=null) {
+								if (typeof that.index.data.user != 'undefined' && that.index.data.user != '' && that.index.data.user !=
+									null) {
 									that.isLogin = true;
 								} else {
 									that.isLogin = false;
 								}
-								if (typeof that.index.data.classifies != 'undefined'&&that.index.data.classifies!=''&&that.index.data.classifies!=null) {
+								if (typeof that.index.data.classifies != 'undefined' && that.index.data.classifies != '' && that.index.data
+									.classifies != null) {
 									that.isClassify = true;
 								} else {
 									that.isClassify = false;
 								}
-								document.getElementById("webInfo").innerHTML="";
+								document.getElementById("webInfo").innerHTML = "";
 								that.hideLoad();
 							}
 						})
@@ -194,7 +196,7 @@
 						$.request.get({
 							url: '/api/classify/list',
 							success: function(str) {
-								that.classify=str.data;
+								that.classify = str.data;
 							}
 						})
 					},
