@@ -158,6 +158,7 @@
 					},
 					getIndex: function(classifyID, title, page) {
 						this.showLoad();
+						this.moveTop();
 						if (typeof classifyID == 'undefined') {
 							classifyID = "";
 						}
@@ -186,7 +187,6 @@
 								}
 								document.getElementById("webInfo").innerHTML = "";
 								that.hideLoad();
-								that.moveTop();
 							}
 						})
 					},
