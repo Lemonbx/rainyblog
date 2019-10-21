@@ -169,7 +169,7 @@
 						}
 						var that = this;
 						$.request.get({
-							url: "/api/index/data?classifyID=" + classifyID + "&title=" + title + "&pageNo=" + page+"&pageSize=1",
+							url: "/api/index/data?classifyID=" + classifyID + "&title=" + title + "&pageNo=" + page,
 							success: function(res) {
 								that.index = res;
 								if (typeof that.index.data.user != 'undefined' && that.index.data.user != '' && that.index.data.user !=
