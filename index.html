@@ -186,6 +186,7 @@
 								}
 								document.getElementById("webInfo").innerHTML = "";
 								that.hideLoad();
+								that.moveTop();
 							}
 						})
 					},
@@ -215,6 +216,9 @@
 					},
 					hideLoad: function() {
 						this.loading = false;
+					},
+					moveTop: function(){
+						$('html,body').animate({scrollTop: '0px'}, 500);
 					}
 				}
 			})

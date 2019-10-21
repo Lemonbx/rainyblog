@@ -26,7 +26,7 @@ var token = "Rainy-Token";
 								icon: 1,
 								time: 3000
 							})
-							window.location.href = "index.html";
+							window.location.href = "/";
 						} else if (str.code == 500) {
 							layer.msg(str.msg, {
 								icon: 2
