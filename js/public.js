@@ -2,7 +2,7 @@
  * 请先按顺序引用jquery.js jquery.cookie.js layer.js
  */
 
-var host = "http://rainybx.top:8081";
+var host = "http://localhost:8081";
 var token = "Rainy-Token";
 (function($) {
 	$.extend({
@@ -68,7 +68,14 @@ var token = "Rainy-Token";
 					success: function(str) {
 						if (str.code == 200) {
 							d.success(str);
-						} else {
+						} else if(str.code==401) {
+							layer.msg("登录失效，3秒后跳转到登录页面", {
+								icon: 2
+							});
+							setTimeout(function() {
+								window.location.href = "/login";
+							}, 3000);
+						}else{
 							layer.msg(str.msg, {
 								icon: 2
 							});

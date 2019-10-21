@@ -169,7 +169,7 @@
 						}
 						var that = this;
 						$.request.get({
-							url: "/api/index/data?classifyID=" + classifyID + "&title=" + title + "&pageNo=" + page,
+							url: "/api/index/data?classifyID=" + classifyID + "&title=" + title + "&pageNo=" + page+"&pageSize=1",
 							success: function(res) {
 								that.index = res;
 								if (typeof that.index.data.user != 'undefined' && that.index.data.user != '' && that.index.data.user !=
@@ -202,10 +202,10 @@
 						})
 					},
 					nextPage: function() {
-						this.getIndex(this.index.data.classifyID, this.search, this.index.data.article.current + 1)
+						this.getIndex(this.index.data.classifyID, this.search, this.index.data.pageNo + 1)
 					},
 					beforePage: function() {
-						this.getIndex(this.index.data.classifyID, this.search, this.index.data.article.current - 1)
+						this.getIndex(this.index.data.classifyID, this.search, this.index.data.pageNo - 1)
 					},
 					changeClassify: function(classify) {
 						this.getIndex(classify, undefined, undefined)
