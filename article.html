@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>文章详情</title>
+		<link href="css/bootstrap.css" rel="stylesheet" type="text/css">
+		<link href="css/public.css" rel="stylesheet" type="text/css">
+		<style>
+			* {
+		            /*animation: rotation 6s linear 0s infinite;*/
+		        }
+		.container-fluid[v-cloak]{
+			display: none;
+		}
+		
+		        @keyframes rotation {
+		            from {
+		                transform: rotate(0deg);
+		            }
+		            to {
+		                transform: rotate(360deg);
+		            }
+		        }
+		    </style>
+	</head>
+	<body>
+		<div class="container-fluid" v-cloak>
+			<nav class="navbar navbar-expand-lg navbar-light bg-light"><a class="navbar-brand" href="/"><img src="img/img.png"
+					 height="50px" alt="" style="border-radius: 50%"></a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent1"
+				 aria-controls="navbarSupportedContent1" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent1">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item"><a class="nav-link" href="/">首页 </a></li>
+						<li class="nav-item" v-if="isLogin"><a class="nav-link" href="#">个人中心(暂时不可用) </a></li>
+						<li class="nav-item" v-else><a class="nav-link" href="login.html">登录 </a></li>
+					</ul>
+				</div>
+			</nav>
+			<div class="row">
+				<div class="col-lg-10 col-md-10 col-sm-10 offset-lg-1 offset-md-1 offset-sm-1 left">
+					<br>
+					<div style="text-align: center">
+						<h3>{{article.title}}</h3>
+						<span style="font-size: 0.9em;color: gray;">{{article.time}}</span><br>
+						<span style="font-size: 0.9em;color: gray;">
+								文章分类：
+								<span v-if="classify.pname!=null">{{classify.pname}}-></span>{{classify.name}}
+						</span>
+						<br>
+						<hr>
+					</div>
+					<div class="article-content" v-html="article.content">
+						<hr>
+					</div>
+					<div class="sendComment">
+						<#if user??>
+							<#include "editpage.ftl">
+								<button type="button" id="sub" class="layui-btn layui-btn-fluid">发表评论</button>
+								<#else>
+									<a href="javascript:jumpToLogin()">登录</a>后发表评论
+						</#if>
+
+					</div>
+					<br><br>
+					<div class="comment">
+						<div class="commenti">
+							<img src="/static/images/img.png" height="50px" alt="" style="border-radius: 50%;"><span style="margin-left: 10px">测试</span>
+							<p style="margin: 10px 20px">测试</p>
+							<a href="" style="margin-left: 20px">删除</a>
+							<hr>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="webInfo">
+			<div style="text-align: center;">
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				Loading...
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jquery.cookie.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layer.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/public.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js"></script>
+	<script>
+		var vue = new Vue({
+			el: '.container-fluid',
+			data: {
+				article: {},
+				user: {},
+				isLogin: false,
+				comment: {},
+				classify:{}
+			},
+			mounted: function() {
+				this.getArticle();
+				this.getUser();
+			},
+			methods: {
+				getArticle: function() {
+					var that = this;
+					var url = location.href;
+					var id = url.substr(url.indexOf("#") + 1, url.length);
+					if (id == '' || url.indexOf("#") == -1) {
+						layer.msg("页面加载失败...正在跳转到首页", {
+							icon: 2,
+							time: 3000
+						})
+						setTimeout(function() {
+							window.location.href = "/";
+						}, 1500);
+					}
+					$.request.get({
+						url: '/api/article/getOne',
+						data: {
+							id: id
+						},
+						success: function(str) {
+							that.article = str.data;
+							that.getClassify(str.data.classify);
+							document.getElementById("webInfo").innerHTML = "";
+						}
+					})
+				},
+				getUser: function() {
+					var that = this;
+					$.request.get({
+						url: '/api/currentuser',
+						success: function(str) {
+							if (typeof str.data != 'undefined' && str.data != '' && str.data !=
+								null) {
+								that.user = str.data;
+								that.isLogin = true;
+							} else {
+								that.user = {};
+								that.isLogin = false;
+							}
+						}
+					})
+				},
+				getClassify: function(id){
+					var that = this;
+					$.request.get({
+						url: '/api/classify/getOne',
+						data:{
+							id: id
+						},
+						success: function(str){
+							that.classify=str.data;
+						}
+					})
+				}
+			}
+		})
+	</script>
+</html>

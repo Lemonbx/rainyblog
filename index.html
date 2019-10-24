@@ -76,8 +76,8 @@
 					<span v-if="index.data.article.total==0">暂无文章</span>
 					<span v-else>{{index.data.article.total}}条相关结果<br><br></span>
 
-					<div class="article-block notice article" v-for="art in index.data.article.rows" style="cursor: pointer"
-					 v-bind:data-title="art.title" v-bind:data-id="art.id">{{art.title}}
+					<div class="article-block notice article" v-for="art in index.data.article.rows" style="cursor: pointer" @click="openArticle(art.id)">{{art.title}}
+					 <span v-if="art.weight==999" style="font-size: 0.8em;color:red;">&nbsp;&nbsp;&nbsp;&nbsp;置顶</span>
 						<br>
 						<span style="font-size: 0.9em;color: gray;">{{art.time}}</span>
 					</div>
@@ -218,6 +218,9 @@
 					},
 					moveTop: function(){
 						$('html,body').animate({scrollTop: '0px'}, 500);
+					},
+					openArticle: function(id){
+						window.open("article#"+id)
 					}
 				}
 			})
