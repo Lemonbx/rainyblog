@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>找回登录名</title>
+		<link rel="shortcut icon" href="static/favicon.ico" />
+		<link rel="bookmark" href="static/favicon.ico" />
+		<link href="css/bootstrap.css" rel="stylesheet" type="text/css">
+		<link href="css/public.css" rel="stylesheet" type="text/css">
+		<style>
+			* {
+				/*animation: rotation 6s linear 0s infinite;*/
+			}
+
+			.container-fluid[v-cloak] {
+				display: none;
+			}
+
+			@keyframes rotation {
+				from {
+					transform: rotate(0deg);
+				}
+
+				to {
+					transform: rotate(360deg);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="container-fluid" v-cloak>
+				<nav class="navbar navbar-expand-lg navbar-light bg-light"><a class="navbar-brand" href="/"><img src="img/img.png"
+						 height="50px" alt="" style="border-radius: 50%"></a>
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent1"
+					 aria-controls="navbarSupportedContent1" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+					<div class="collapse navbar-collapse" id="navbarSupportedContent1">
+						<ul class="navbar-nav mr-auto">
+							<li class="nav-item"><a class="nav-link" href="/">首页 </a></li>
+							<li class="nav-item"><a class="nav-link" href="login.html">登录 </a></li>
+						</ul>
+					</div>
+				</nav>
+				<div class="row">
+					<div class="col-lg-10 col-md-10 col-sm-10 offset-lg-1 offset-md-1 offset-sm-1 left">
+						<br>
+						<div v-if="going">
+							<form @submit.prevent="sendEmail">
+								<div class="form-group">
+									<label for="loginName">邮箱</label>
+									<input type="email" class="form-control" id="email" placeholder="请在这里输入您注册时使用的电子邮件地址，我们将会把您的登录名发送至您的邮箱"
+									 required="required">
+								</div>
+								<button type="submit" id="login" class="btn btn-primary ">发送</button>
+							</form>
+						</div>
+						<div v-else>
+							邮件发送成功。<br>
+							如果未收到邮件，请查看您邮箱的垃圾箱，它可能在那里。
+						</div>
+						<br>
+						<a href="/login" class="">返回登录</a>
+					</div>
+				</div>
+			</div>
+			<div id="webInfo">
+				<div style="text-align: center;">
+					<br>
+					<br>
+					<br>
+					<br>
+					<br>
+					Loading...
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jquery.cookie.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/layer.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/public.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js"></script>
+	<script>
+		var vue = new Vue({
+			el: '.container-fluid',
+			data: {
+				going: true
+			},
+			mounted: function() {
+				this.hideLoading();
+			},
+			methods: {
+				hideLoading: function() {
+					document.getElementById("webInfo").innerHTML = "";
+				},
+				sendEmail: function() {
+					document.getElementById("login").disabled="disabled";
+					document.getElementById("login").innerHTML="<img src='img/load.gif' height='21px'>Loading...";
+					var that = this;
+					$.request.get({
+						url: "/api/findusername",
+						data: {
+							email: document.getElementById("email").value
+						},
+						success: function() {
+							that.going = false;
+						}
+					})
+					return false;
+				}
+			}
+		})
+	</script>
+</html>

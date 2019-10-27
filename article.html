@@ -53,21 +53,22 @@
 						<hr>
 					</div>
 					<div class="article-content" v-html="article.content">
-						<hr>
+						
 					</div>
+					<hr>
 					<div class="sendComment">
-						<#if user??>
+						<!--<# if user??>
 							<#include "editpage.ftl">
 								<button type="button" id="sub" class="layui-btn layui-btn-fluid">发表评论</button>
-								<#else>
-									<a href="javascript:jumpToLogin()">登录</a>后发表评论
-						</#if>
+								<#else> -->
+									<a href="login">登录</a>后发表评论
+						<!-- </#if> -->
 
 					</div>
 					<br><br>
 					<div class="comment">
 						<div class="commenti">
-							<img src="/static/images/img.png" height="50px" alt="" style="border-radius: 50%;"><span style="margin-left: 10px">测试</span>
+							<img src="img/img.png" height="50px" alt="" style="border-radius: 50%;"><span style="margin-left: 10px">测试</span>
 							<p style="margin: 10px 20px">测试</p>
 							<a href="" style="margin-left: 20px">删除</a>
 							<hr>
