@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>文章详情</title>
+		<title>文章详情 - Rainy的小站</title>
 		<link href="css/bootstrap.css" rel="stylesheet" type="text/css">
 		<link href="css/public.css" rel="stylesheet" type="text/css">
 		<style>
@@ -61,8 +61,10 @@
 							<#include "editpage.ftl">
 								<button type="button" id="sub" class="layui-btn layui-btn-fluid">发表评论</button>
 								<#else> -->
-								<div v-if="isLogin">
-									已登录，编辑器正在做 评论发不了
+								<div v-if="isLogin" style="margin: 0px auto;">
+									<span style="text-align: center;display: block; width: 60%;line-height: 3em;">发表评论</span>
+									<textarea style="width: 60%;" class="form-control" id="text"></textarea>
+									<button style="width: 60%;" class="btn btn-block btn-primary" id="subcomment" @click="subComments()">提交</button>
 								</div>
 								<div v-else>
 									<a href="login">登录</a>后发表评论
@@ -76,7 +78,7 @@
 						<div class="commenti">	
 							<img v-bind:src="com.logo" height="50px" alt="" style="border-radius: 50%;"><span style="margin-left: 10px">{{com.name}}</span>
 							<p style="margin: 10px 20px">{{com.content}}</p>
-							<a href="" style="margin-left: 20px">删除</a>
+							<a href="javascript:void(0)" style="margin-left: 20px" @click="delComment(com.id)" v-if="com.userCode==user.userCode">删除</a>
 							<hr>
 						</div>
 						
@@ -137,9 +139,19 @@
 							id: id
 						},
 						success: function(str) {
+							if(typeof str.data == "undefined"||str.data==""||str.data==null){
+								layer.msg("无相关文章...正在跳转到首页", {
+									icon: 2,
+									time: 3000
+								})
+								setTimeout(function() {
+									window.location.href = "/";
+								}, 1500);
+							}
 							that.article = str.data;
 							that.getClassify(str.data.classify);
 							that.getComments(id);
+							document.title=str.data.title+" - Rainy的小站";
 							document.getElementById("webInfo").innerHTML = "";
 						}
 					})
@@ -191,6 +203,30 @@
 							
 						}
 					})
+				},
+				subComments: function(){
+					var that = this;
+					document.getElementById("text").disabled = "disabled";
+					document.getElementById("subcomment").disabled = "disabled";
+					document.getElementById("subcomment").innerHTML = "<img src='img/load.gif' height='21px'>Loading...";
+					var comment = document.getElementById("text").value;
+					$.request.post({
+						url: "/api/article/comments",
+						data:{
+							id: that.article.id,
+							comments: comment
+						},
+						success: function(str){
+							document.getElementById("text").value="";
+							document.getElementById("text").removeAttribute("disabled");
+							document.getElementById("subcomment").removeAttribute("disabled");
+							document.getElementById("subcomment").innerHTML = "提交";
+							that.getComments(that.article.id);
+						}
+					})
+				},
+				delComment: function(id){
+					alert("删除功能将尽快上线~");
 				}
 			}
 		})
