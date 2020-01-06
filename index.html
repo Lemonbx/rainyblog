@@ -109,7 +109,7 @@
 						<div class="infoCss" style="">
 							<span style="font-size: 20px">
 									友情链接</span><div style="height: 0.625rem"></div>
-							<a v-for="fr in friendly" v-bind:href="fr.url" @click="changeClassify(child.id)" style="color: gray;padding-right: 0.9375rem;">{{fr.name}}</a>
+							<a v-for="fr in friendly" v-bind:href="fr.url" target="_blank" @click="changeClassify(child.id)" style="color: gray;padding-right: 0.9375rem;">{{fr.name}}</a>
 						</div>
 						</#list>
 					</div>
