@@ -61,18 +61,26 @@
 							<#include "editpage.ftl">
 								<button type="button" id="sub" class="layui-btn layui-btn-fluid">发表评论</button>
 								<#else> -->
+								<div v-if="isLogin">
+									已登录，编辑器正在做 评论发不了
+								</div>
+								<div v-else>
 									<a href="login">登录</a>后发表评论
+								</div>
 						<!-- </#if> -->
 
 					</div>
 					<br><br>
-					<div class="comment">
-						<div class="commenti">
-							<img src="img/img.png" height="50px" alt="" style="border-radius: 50%;"><span style="margin-left: 10px">测试</span>
-							<p style="margin: 10px 20px">测试</p>
+					<span id="info">评论加载中...</span>
+					<div class="comment" v-for="com in comment">
+						<div class="commenti">	
+							<img v-bind:src="com.logo" height="50px" alt="" style="border-radius: 50%;"><span style="margin-left: 10px">{{com.name}}</span>
+							<p style="margin: 10px 20px">{{com.content}}</p>
 							<a href="" style="margin-left: 20px">删除</a>
 							<hr>
 						</div>
+						
+						
 					</div>
 				</div>
 			</div>
@@ -102,7 +110,8 @@
 				user: {},
 				isLogin: false,
 				comment: {},
-				classify:{}
+				classify:{},
+				haveComment: false
 			},
 			mounted: function() {
 				this.getArticle();
@@ -130,6 +139,7 @@
 						success: function(str) {
 							that.article = str.data;
 							that.getClassify(str.data.classify);
+							that.getComments(id);
 							document.getElementById("webInfo").innerHTML = "";
 						}
 					})
@@ -159,6 +169,26 @@
 						},
 						success: function(str){
 							that.classify=str.data;
+						}
+					})
+				},
+				getComments: function(id){
+					var that = this;
+					$.request.get({
+						url: '/api/article/comments',
+						data:{
+							id: id
+						},
+						success: function(str){
+							that.comment=str.data;
+							if(that.comment.length!=0){
+								that.haveComment=true;
+								$("#info").html("");
+							}else{
+								that.haveComment=false;
+								$("#info").html("暂无评论");
+							}
+							
 						}
 					})
 				}
