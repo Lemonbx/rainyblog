@@ -2,7 +2,7 @@
  * 请先按顺序引用jquery.js jquery.cookie.js layer.js
  */
 
-var host = "http://rainybx.top:8081";
+var host = "http://localhost:8081";
 var token = "Rainy-Token";
 (function($) {
 	$.extend({

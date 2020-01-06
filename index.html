@@ -1,4 +1,4 @@
-	<!doctype html>
+<!doctype html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -77,7 +77,7 @@
 					<span v-else>{{index.data.article.total}}条相关结果<br><br></span>
 
 					<div class="article-block notice article" v-for="art in index.data.article.rows" style="cursor: pointer" @click="openArticle(art.id)">{{art.title}}
-					 <span v-if="art.weight==999" style="font-size: 0.8em;color:red;">&nbsp;&nbsp;&nbsp;&nbsp;置顶</span>
+						<span v-if="art.weight==999" style="font-size: 0.8em;color:red;">&nbsp;&nbsp;&nbsp;&nbsp;置顶</span>
 						<br>
 						<span style="font-size: 0.9em;color: gray;">{{art.time}}</span>
 					</div>
@@ -105,7 +105,14 @@
 						</div>
 						</#list>
 					</div>
-
+					<div class="article-block" style="background-color: #f8f9fa !important;border-radius: 10px;width: 100%;margin-top: 20px">
+						<div class="infoCss" style="">
+							<span style="font-size: 20px">
+									友情链接</span><div style="height: 0.625rem"></div>
+							<a v-for="fr in friendly" v-bind:href="fr.url" @click="changeClassify(child.id)" style="color: gray;padding-right: 0.9375rem;">{{fr.name}}</a>
+						</div>
+						</#list>
+					</div>
 				</div>
 			</div>
 			<br>
@@ -139,7 +146,7 @@
 					index: {
 						data: {
 							title: '',
-							article:{
+							article: {
 								total: 0,
 							},
 							pageNo: 1
@@ -149,11 +156,13 @@
 					isLogin: false,
 					isClassify: false,
 					search: '',
-					loading: false
+					loading: false,
+					friendly: {}
 				},
 				mounted: function() {
 					this.getIndex();
 					this.getClassify();
+					this.getFriendly();
 				},
 				methods: {
 					isBlank: function(item) {
@@ -224,11 +233,22 @@
 					hideLoad: function() {
 						this.loading = false;
 					},
-					moveTop: function(){
-						$('html,body').animate({scrollTop: '0px'}, 500);
+					moveTop: function() {
+						$('html,body').animate({
+							scrollTop: '0px'
+						}, 500);
 					},
-					openArticle: function(id){
-						window.open("article#"+id)
+					openArticle: function(id) {
+						window.open("article#" + id)
+					},
+					getFriendly: function(){
+						var that = this;
+						$.request.get({
+							url: '/api/index/friendly',
+							success: function(str) {
+								that.friendly = str.data;
+							}
+						})
 					}
 				}
 			})
