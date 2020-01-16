@@ -77,7 +77,7 @@
 					<div class="comment" v-for="com in comment">
 						<div class="commenti">	
 							<img v-bind:src="com.logo" height="50px" alt="" style="border-radius: 50%;"><span style="margin-left: 10px">{{com.name}}</span>
-							<p style="margin: 10px 20px">{{com.content}}</p>
+							<p style="margin: 10px 20px" v-html="com.content"></p>
 							<a href="javascript:void(0)" style="margin-left: 20px" @click="delComment(com.id)" v-if="com.userCode==user.userCode">删除</a>
 							<hr>
 						</div>
